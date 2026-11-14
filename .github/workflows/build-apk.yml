@@ -16,6 +16,8 @@ jobs:
         run: mkdir -p project && tar -xJf android-project.tar.xz -C project
       - name: Kullanici uygulamasi kapanma onlemini uygula
         run: python3 tools/fix_receiver_crash.py
+      - name: Sessiz mod siren sesi duzeltmesini uygula
+        run: python3 tools/enable_alarm_boost.py
       - name: Java 17 kur
         uses: actions/setup-java@v4
         with:
