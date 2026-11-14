@@ -40,6 +40,8 @@ jobs:
           print("Kalici imzalama anahtari yuklendi.")
           PY
           fi
+      - name: Sireni medya sesinden calacak sekilde ayarla
+        run: python3 tools/silent_media_sound_v24.py
       - name: Java 17 kur
         uses: actions/setup-java@v4
         with:
