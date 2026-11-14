@@ -25,9 +25,10 @@ jobs:
           gradle-version: '8.9'
       - name: Android platformunu kur
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager --install 'platforms;android-35' 'build-tools;35.0.0'
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          "$SDKMANAGER" --version
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0'
       - name: QR eslesme testi
         run: cd project && bash tests/test_pairing.sh
       - name: Ana ve Kullanici APK derle
