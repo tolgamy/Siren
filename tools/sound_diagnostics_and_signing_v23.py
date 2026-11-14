@@ -8,8 +8,8 @@ def once(s,a,b):
     if s.count(a)!=1: raise RuntimeError("Patch mismatch: "+a[:80])
     return s.replace(a,b)
 s=once(s,"import android.media.AudioTrack;","import android.media.AudioTrack;\nimport android.media.MediaPlayer;")
-s=once(s,"            boostAlarmVolume(ctx, myGeneration);\n            int rate = 22050;",'''
-            boostAlarmVolume(ctx, myGeneration);
+s=once(s,"            raiseVolume(ctx,myGeneration);\n            int rate = 22050;",'''
+            raiseVolume(ctx,myGeneration);
             if (Wire.prefs(ctx).getBoolean("compatible_player", true)) {
                 AudioAttributes attributes = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_ALARM)
