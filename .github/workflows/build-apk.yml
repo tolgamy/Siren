@@ -1,0 +1,41 @@
+name: Iki Android APK Derle
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Kaynaklari al
+        uses: actions/checkout@v4
+      - name: Projeyi ac
+        run: mkdir -p project && tar -xJf android-project.tar.xz -C project
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Gradle kur
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Android SDK kur
+        uses: android-actions/setup-android@v3
+      - name: Android 35 kur
+        run: sdkmanager --install 'platforms;android-35' 'build-tools;35.0.0'
+      - name: QR eslesme testi
+        run: cd project && bash tests/test_pairing.sh
+      - name: Ana ve Kullanici APK derle
+        run: cd project && gradle --no-daemon :ana:assembleDebug :kullanici:assembleDebug
+      - name: Iki APKyi indirilebilir yap
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ana-ve-Kullanici-APK
+          path: |
+            project/ana/build/outputs/apk/debug/ana-debug.apk
+            project/kullanici/build/outputs/apk/debug/kullanici-debug.apk
+          if-no-files-found: error
