@@ -18,6 +18,28 @@ jobs:
         run: python3 tools/fix_receiver_crash.py
       - name: Sessiz mod siren sesi duzeltmesini uygula
         run: python3 tools/enable_alarm_boost.py
+      - name: Sessiz mod ses oynaticisi ve kalici imza destegi
+        run: python3 tools/sound_diagnostics_and_signing_v23.py
+      - name: Kalici imzalama anahtarini etkinlestir
+        env:
+          SIREN_SIGNING_PACKAGE: ${{ secrets.SIREN_SIGNING_PACKAGE }}
+        run: |
+          if [ -z "$SIREN_SIGNING_PACKAGE" ]; then
+            echo "::warning::Kalici imza anahtari tanimli degil. Debug imza ile uretilen APK sonraki surume dogrudan guncellenemez."
+          else
+            python3 - <<'PY'
+          import os, base64, json
+          data=json.loads(base64.b64decode(os.environ["SIREN_SIGNING_PACKAGE"]))
+          path=os.path.abspath("project/private-signing.jks")
+          with open(path,"wb") as f: f.write(base64.b64decode(data["keystore"]))
+          with open(os.environ["GITHUB_ENV"],"a") as f:
+              f.write("SIREN_KEYSTORE_PATH="+path+"\n")
+              f.write("SIREN_KEYSTORE_PASSWORD="+data["password"]+"\n")
+              f.write("SIREN_KEY_ALIAS="+data["alias"]+"\n")
+              f.write("SIREN_KEY_PASSWORD="+data["key_password"]+"\n")
+          print("Kalici imzalama anahtari yuklendi.")
+          PY
+          fi
       - name: Java 17 kur
         uses: actions/setup-java@v4
         with:
